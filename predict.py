@@ -66,9 +66,5 @@ if __name__ == '__main__':
         mfileHigh = loadmat('trainingdata/' + file + '_high.mat')
 
         input = mfileLow['sensorL']['data'][0][0][0][0][0]
-        print(mfileLow['sensorL']['data'][0])
         output = nearest_neighbor(input)
-
-        mfileHigh['sensorH']['data'][0][0][0][0][0] = np.array(output, dtype=np.float32)
-        print(mfileHigh['sensorH']['data'][0])
-        savemat('output/'+ file +'_nearest.mat', mfileHigh)
+        savemat('output/'+ file +'_nearest.mat', {'volts': np.array(output, dtype=np.float32)})
