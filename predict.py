@@ -5,9 +5,9 @@ from os import listdir
 import numpy as np
 
 def get_output(input):
-    print('input size: {} x {}'.format(len(input), len(input[0])))
+    # print('input size: {} x {}'.format(len(input), len(input[0])))
     output = [[0 for col in range(len(input[0])*2 + 2)] for row in range(len(input)*2 + 2)]
-    print('output size: {} x {}'.format(len(output), len(output[0])))
+    # print('output size: {} x {}'.format(len(output), len(output[0])))
     return output
 
 def nearest_neighbor(input):
@@ -47,7 +47,7 @@ def bilinear_interpolation(input):
             if row < max_row - 2:
                 output[row*2+1][col*2] = (input[row][col] + input[row+2][col]) / 2
 
-            if col < max_row_col - 2:
+            if col < max_col - 2:
                 output[row*2][col*2+1] = (input[row][col] + input[row][col+2]) / 2
 
             if row < max_row - 2 and col < max_col - 2:
@@ -56,9 +56,11 @@ def bilinear_interpolation(input):
     return output
 
 def mean_squared_error(output, target):
-    mse = (np.square(output - target)).mean(axis=None)
+    return (np.square(output - target)).mean(axis=None)
 
 if __name__ == '__main__':
+    algorithms = ['nearest', 'bilinear']
+
     files = [file.split('_')[0] for file in listdir("trainingdata")]
 
     for file in files:
@@ -66,5 +68,15 @@ if __name__ == '__main__':
         mfileHigh = loadmat('trainingdata/' + file + '_high.mat')
 
         input = mfileLow['sensorL']['data'][0][0][0][0][0]
-        output = nearest_neighbor(input)
-        savemat('output/'+ file +'_nearest.mat', {'volts': np.array(output, dtype=np.float32)})
+        target = mfileHigh['sensorH']['data'][0][0][0][0][0]
+
+        for algorithm in algorithms:
+            if algorithm == 'nearest':
+                output = nearest_neighbor(input)
+            elif algorithm == 'bilinear':
+                output = bilinear_interpolation(input)
+
+            print(file, algorithm, mean_squared_error(output, target))
+            savemat('output/'+ file +'_' + algorithm + '.mat', {'volts': np.array(output, dtype=np.float32)})
+
+
