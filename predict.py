@@ -1,8 +1,9 @@
 #!python
-
-from scipy.io import loadmat, savemat
-from os import listdir
 import numpy as np
+
+from keras.models import load_model
+from os import listdir
+from scipy.io import loadmat, savemat
 
 def get_output(input):
     # print('input size: {} x {}'.format(len(input), len(input[0])))
@@ -59,7 +60,8 @@ def mean_squared_error(output, target):
     return (np.square(output - target)).mean(axis=None)
 
 if __name__ == '__main__':
-    algorithms = ['nearest', 'bilinear']
+    algorithms = ['nearest', 'bilinear', 'cnn']
+    cnn_model = load_model('models/cnn.h5')
 
     files = [file.split('_')[0] for file in listdir("trainingdata")]
 
@@ -75,6 +77,9 @@ if __name__ == '__main__':
                 output = nearest_neighbor(input)
             elif algorithm == 'bilinear':
                 output = bilinear_interpolation(input)
+            elif algorithm == 'cnn':
+                output = cnn_model.predict(np.array(input).reshape(1, 100, 120, 1)).reshape(202,242)
+
 
             print(file, algorithm, mean_squared_error(output, target))
             savemat('output/'+ file +'_' + algorithm + '.mat', {'volts': np.array(output, dtype=np.float32)})
