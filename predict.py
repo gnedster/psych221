@@ -24,13 +24,13 @@ def nearest_neighbor(input):
 
             output[m_row][m_col] = input[row][col]
 
-            if row < max_row - 1:
+            if row < max_row:
                 output[m_row + 2][m_col] = input[row][col]
 
-            if col < max_col - 1:
+            if col < max_col:
                 output[m_row][m_col + 2] = input[row][col]
 
-            if row < max_row - 1 and col < max_col - 1:
+            if row < max_row and col < max_col:
                 output[m_row + 2][m_col + 2] = input[row][col]
 
     return output
@@ -43,16 +43,28 @@ def bilinear_interpolation(input):
 
     for row in range(max_row):
         for col in range(max_col):
-            output[row*2][col*2] = input[row][col]
+            m_row = row // 2 * 2 + row
+            m_col = col // 2 * 2 + col
 
-            if row < max_row - 2:
-                output[row*2+1][col*2] = (input[row][col] + input[row+2][col]) / 2
+            output[m_row][m_col] = input[row][col]
 
-            if col < max_col - 2:
-                output[row*2][col*2+1] = (input[row][col] + input[row][col+2]) / 2
+            if row < max_row:
+                if row + 2 >= max_row:
+                    output[m_row + 2][m_col] = input[row][col]
+                else:
+                    output[m_row + 2][m_col] = (input[row][col] + input[row+2][col]) / 2
 
-            if row < max_row - 2 and col < max_col - 2:
-                output[row*2+1][col*2+1] = (input[row][col] + input[row+2][col] + input[row][col+2] + input[row+2][col+2]) / 4
+            if col < max_col:
+                if col + 2 >= max_col:
+                    output[m_row][m_col + 2] = input[row][col]
+                else:
+                    output[m_row][m_col + 2] = (input[row][col] + input[row][col+2]) / 2
+
+            if row < max_row and col < max_col:
+                if col + 2 >= max_col or row + 2 >= max_row:
+                    output[m_row + 2][m_col + 2] = (input[row][col])
+                else:
+                    output[m_row + 2][m_col + 2] = (input[row][col] + input[row+2][col] + input[row][col+2] + input[row+2][col+2]) / 4
 
     return output
 
