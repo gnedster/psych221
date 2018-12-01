@@ -27,7 +27,7 @@ def nearest_neighbor(input):
             if row < max_row - 1:
                 output[m_row + 2][m_col] = input[row][col]
 
-            if max_col < max_col - 1:
+            if col < max_col - 1:
                 output[m_row][m_col + 2] = input[row][col]
 
             if row < max_row - 1 and col < max_col - 1:

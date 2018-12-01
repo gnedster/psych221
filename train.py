@@ -10,14 +10,14 @@ from scipy.io import loadmat, savemat
 
 def get_model():
     model = Sequential()
-    model.add(Conv2DTranspose(32,
+    model.add(Conv2DTranspose(64,
         kernel_size=(8,8),
         input_shape=(100,120,1),
         strides=(2, 2),
         activation='relu',
         use_bias=True
         ))
-    model.add(Conv2D(16,
+    model.add(Conv2D(32,
         kernel_size=(4,4),
         padding='valid',
         activation='relu',
