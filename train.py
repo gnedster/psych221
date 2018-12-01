@@ -1,20 +1,34 @@
 import keras
 import numpy as np
 
+from keras.layers import Conv2D, Conv2DTranspose, Dropout, Flatten
 from keras.models import Sequential
-from keras.layers import Conv2DTranspose, Dropout, Flatten
+from keras.optimizers import Adam
+
 from os import listdir
 from scipy.io import loadmat, savemat
 
 def get_model():
     model = Sequential()
-    model.add(Conv2DTranspose(1,
-        kernel_size=(4,4),
+    model.add(Conv2DTranspose(32,
+        kernel_size=(8,8),
         input_shape=(100,120,1),
         strides=(2, 2),
-        activation='relu'
+        activation='relu',
+        use_bias=True
         ))
-
+    model.add(Conv2D(16,
+        kernel_size=(4,4),
+        padding='valid',
+        activation='relu',
+        use_bias=True,
+        ))
+    model.add(Conv2D(1,
+        kernel_size=(2,2),
+        padding='valid',
+        activation='linear',
+        use_bias=True,
+        ))
 
     return model
 
@@ -40,10 +54,10 @@ if __name__ == '__main__':
 
     model = get_model()
     model.compile(loss='mean_squared_error',
-              optimizer='sgd',
-              metrics=['accuracy'])
+              optimizer=Adam(lr=0.003),
+              metrics=['mean_squared_error'])
 
-    model.fit(X_train, Y_train, epochs=100, batch_size=4)
+    model.fit(X_train, Y_train, epochs=50, batch_size=4)
     model.save('models/cnn.h5')
 
 
