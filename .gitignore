@@ -1,1 +1,4 @@
 .DS_Store
+rawdata/
+output/
+*.pyc
