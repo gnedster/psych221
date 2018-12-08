@@ -1,0 +1,14 @@
+tools
+=====
+keras
+tensorflow
+
+Resources
+
+https://towardsdatascience.com/building-a-convolutional-neural-network-cnn-in-keras-329fbbadc5f5
+https://arxiv.org/abs/1707.05425
+https://cs231n.github.io/convolutional-networks/
+https://ml4a.github.io/ml4a/looking_inside_neural_nets/
+
+maybe:
+https://ml4a.github.io/ml4a/looking_inside_neural_nets/
