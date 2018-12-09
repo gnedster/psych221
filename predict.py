@@ -3,6 +3,7 @@ import numpy as np
 
 from keras.models import load_model
 from os import listdir
+from sklearn.model_selection import train_test_split
 from scipy.io import loadmat, savemat
 
 def get_output(input):
@@ -76,6 +77,8 @@ if __name__ == '__main__':
     cnn_model = load_model('models/cnn.h5')
 
     files = [file.split('_')[0] for file in listdir("trainingdata")]
+
+    _, files, _, _ = train_test_split(files, files, test_size=0.33, random_state=421)
 
     for file in files:
         mfileLow = loadmat('trainingdata/' + file + '_low.mat')
