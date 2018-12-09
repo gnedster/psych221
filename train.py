@@ -2,7 +2,6 @@ import keras
 import matplotlib.pyplot as plt
 import numpy as np
 
-from keras import backend as K
 from keras.callbacks import EarlyStopping, ModelCheckpoint
 from keras.layers import Conv2D, Conv2DTranspose, Dropout, Flatten
 from keras.models import Sequential
@@ -66,34 +65,6 @@ def get_model():
         model.add(layer)
 
     return (model, layers)
-
-def layer_to_visualize(model, layer, input):
-    inputs = [K.learning_phase()] + model.inputs
-
-    _convout1_f = K.function(inputs, [layer.output])
-    def convout1_f(X):
-        # The [0] is to disable the training phase flag
-        return _convout1_f([0] + [X])
-
-    input = np.expand_dims(input, axis=0)
-
-    convolutions = convout1_f(input)
-    convolutions = np.squeeze(convolutions)
-
-    print ('Shape of conv:', convolutions.shape)
-
-    n = convolutions.shape[2]
-    n = int(np.ceil(np.sqrt(n)))
-
-    convolutions = np.moveaxis(convolutions, -1, 0)
-
-    # Visualization of each filter of the layer
-    fig = plt.figure()
-    for i in range(len(convolutions)):
-        ax = fig.add_subplot(n,n,i+1)
-        ax.imshow(convolutions[i], cmap='viridis')
-
-    fig.savefig('layer1.png')
 
 if __name__ == '__main__':
     files = [file.split('_')[0] for file in listdir("trainingdata")]
