@@ -108,7 +108,7 @@ if __name__ == '__main__':
         X.append(mfileLow['sensorL']['data'][0][0][0][0][0])
         y.append(mfileHigh['sensorH']['data'][0][0][0][0][0])
 
-    X_train, X_test, y_train, y_test = train_test_split(X, y, test_size=0.33)
+    X_train, X_test, y_train, y_test = train_test_split(X, y, test_size=0.33, random_state=421)
 
     model, layers = get_model()
     model.compile(loss='mean_squared_error',
@@ -118,7 +118,7 @@ if __name__ == '__main__':
     earlystop = EarlyStopping(monitor='mean_squared_error', min_delta=0.00001, patience=5, verbose=1, mode='auto')
     modelcheckpoint = ModelCheckpoint('models/cnn.h5', monitor='mean_squared_error', verbose=0, save_best_only=True, save_weights_only=False, mode='auto', period=1)
 
-    model.fit(np.expand_dims(np.array(X_train), axis=3), np.expand_dims(np.array(y_train), axis=3), epochs=100, batch_size=32, callbacks=[earlystop, modelcheckpoint])
+    history = model.fit(np.expand_dims(np.array(X_train), axis=3), np.expand_dims(np.array(y_train), axis=3), epochs=100, batch_size=16, callbacks=[earlystop, modelcheckpoint], verbose=1)
     model.save('models/cnn.h5')
 
-    layer_to_visualize(model, layers[1], X_test[0])
+    layer_to_visualize(model, layers[1], np.array(X_test[0]).shape(1, 100, 120, 1))
