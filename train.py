@@ -3,9 +3,11 @@ import matplotlib.pyplot as plt
 import numpy as np
 
 from keras import backend as K
+from keras.callbacks import EarlyStopping, ModelCheckpoint
 from keras.layers import Conv2D, Conv2DTranspose, Dropout, Flatten
 from keras.models import Sequential
 from keras.optimizers import Adam
+
 from sklearn.model_selection import train_test_split
 
 from os import listdir
@@ -113,7 +115,10 @@ if __name__ == '__main__':
               optimizer=Adam(lr=0.003),
               metrics=['mean_squared_error'])
 
-    model.fit(np.expand_dims(np.array(X_train), axis=3), np.expand_dims(np.array(y_train), axis=3), epochs=3, batch_size=32)
+    earlystop = EarlyStopping(monitor='mean_squared_error', min_delta=0.00001, patience=5, verbose=1, mode='auto')
+    modelcheckpoint = ModelCheckpoint('models/cnn.h5', monitor='mean_squared_error', verbose=0, save_best_only=True, save_weights_only=False, mode='auto', period=1)
+
+    model.fit(np.expand_dims(np.array(X_train), axis=3), np.expand_dims(np.array(y_train), axis=3), epochs=100, batch_size=32, callbacks=[earlystop, modelcheckpoint])
     model.save('models/cnn.h5')
 
     layer_to_visualize(model, layers[1], X_test[0])
