@@ -1,4 +1,6 @@
 #!python
+from collections import Counter
+
 import numpy as np
 
 from keras.models import load_model
@@ -73,10 +75,12 @@ def mean_squared_error(output, target):
     return (np.square(output - target)).mean(axis=None)
 
 if __name__ == '__main__':
+    accumulator = Counter()
     algorithms = ['nearest', 'bilinear', 'cnn']
     cnn_model = load_model('models/cnn.h5')
 
     files = [file.split('_')[0] for file in listdir("trainingdata")]
+
 
     _, files, _, _ = train_test_split(files, files, test_size=0.33, random_state=421)
 
@@ -95,8 +99,11 @@ if __name__ == '__main__':
             elif algorithm == 'cnn':
                 output = cnn_model.predict(input.reshape(1, 100, 120, 1)).reshape(202,242)
 
+            accumulator[algorithm] += mean_squared_error(output, target)
 
             print(file, algorithm, mean_squared_error(output, target))
             savemat('output/'+ file +'_' + algorithm + '.mat', {'volts': np.array(output, dtype=np.float32)})
 
+    print(accumulator)
+    print(len(files))
 
