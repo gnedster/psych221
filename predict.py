@@ -90,7 +90,7 @@ if __name__ == '__main__':
             elif algorithm == 'bilinear':
                 output = bilinear_interpolation(input)
             elif algorithm == 'cnn':
-                output = cnn_model.predict(np.array(bilinear_interpolation(input)).reshape(1, 202, 242, 1)).reshape(202,242)
+                output = cnn_model.predict(input.reshape(1, 100, 120, 1)).reshape(202,242)
 
 
             print(file, algorithm, mean_squared_error(output, target))
